@@ -2,6 +2,7 @@ package com.elearning.hotelbooking.service.impl;
 
 import com.elearning.hotelbooking.domain.Role;
 import com.elearning.hotelbooking.domain.User;
+import com.elearning.hotelbooking.domain.enums.AuthProvider;
 import com.elearning.hotelbooking.dto.*;
 import com.elearning.hotelbooking.repository.RoleRepository;
 import com.elearning.hotelbooking.repository.UserRepository;
@@ -49,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
         u.setPasswordHash(encoder.encode(r.password()));
         u.setGivenName(r.givenName());
         u.setFamilyName(r.familyName());
-        u.setProvider(User.Provider.LOCAL);
+        u.setProvider(AuthProvider.LOCAL);
         u.setEnabled(true);
 
         Role userRole = roles.findByName("ROLE_USER")
