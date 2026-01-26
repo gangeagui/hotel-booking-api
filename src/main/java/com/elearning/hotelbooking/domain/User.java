@@ -1,5 +1,6 @@
 package com.elearning.hotelbooking.domain;
 
+import com.elearning.hotelbooking.domain.enums.AuthProvider;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,10 +16,10 @@ import java.util.*;
 @Table(name = "users")
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Mapear UUID a BINARY(16)
     @Column(nullable = false, unique = true, columnDefinition = "BINARY(16)")
     @JdbcTypeCode(SqlTypes.BINARY)
     private UUID uuid;
@@ -49,7 +50,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
-    private Provider provider = Provider.LOCAL;
+    private AuthProvider provider = AuthProvider.LOCAL;
 
     @Column(name = "provider_sub", length = 255)
     private String providerSub;
@@ -60,8 +61,6 @@ public class User {
     @Column(name = "updated_at", insertable = false)
     private Instant updatedAt;
 
-    public enum Provider { LOCAL, GOOGLE }
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -70,4 +69,10 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @PrePersist
+    public void prePersist() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
+    }
 }
